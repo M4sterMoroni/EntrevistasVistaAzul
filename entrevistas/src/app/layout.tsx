@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Gestión de Entrevistas · Barrio Vista Azul",
-  description: "Selección de tipo de entrevista",
+  title: "Solicitud de Entrevista · Barrio Vista Azul",
+  description: "Selecciona el tipo de entrevista a solicitar",
 };
 
 export default function RootLayout({

@@ -65,7 +65,7 @@ export default function Home() {
           <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium bg-blue-50 text-blue-600 border border-blue-100">
             <span>Barrio Vista Azul</span>
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight">Gestión de entrevistas</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">Solicitud de Entrevista</h1>
           <p className="text-sm text-neutral-500">Selecciona el tipo de entrevista</p>
         </header>
 
