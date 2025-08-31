@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 type Option = {
   key: string;
   label: string;
-  envVar: string;
+  envVar: string | string[];
   description?: string;
   children?: Option[];
 };
@@ -14,28 +14,40 @@ const OPTIONS: Option[] = [
   {
     key: "recomendacion",
     label: "Recomendación para el templo",
-    envVar: "NEXT_PUBLIC_URL_RECOMENDACION",
+    envVar: "NEXT_PUBLIC_OBISPO",
     children: [
       {
         key: "primera-ordenanza",
         label: "Primera ordenanza personal",
-        envVar: "NEXT_PUBLIC_URL_RECOMENDACION_PRIMERA_ORDENANZA",
+        envVar: ["NEXT_PUBLIC_PRIMER_CONSEJERO", "NEXT_PUBLIC_SEGUNDO_CONSEJERO"],
       },
       {
         key: "renovacion",
         label: "Renovación",
-        envVar: "NEXT_PUBLIC_URL_RECOMENDACION_RENOVACION",
+        envVar: ["NEXT_PUBLIC_PRIMER_CONSEJERO", "NEXT_PUBLIC_SEGUNDO_CONSEJERO"],
       },
     ],
   },
-  { key: "dignidad", label: "Dignidad", envVar: "NEXT_PUBLIC_URL_DIGNIDAD" },
+  { key: "dignidad", label: "Dignidad", envVar: "NEXT_PUBLIC_OBISPO" },
   {
     key: "autosuficiencia",
     label: "Desafíos temporales",
     description: "Plan de autosuficiencia",
-    envVar: "NEXT_PUBLIC_URL_AUTOSUFICIENCIA",
+    envVar: "#",
+    children: [
+      {
+        key: "autosuficiencia-varones",
+        label: "Varones",
+        envVar: "NEXT_PUBLIC_PRES_CUORUM",
+      },
+      {
+        key: "autosuficiencia-mujeres",
+        label: "Mujeres",
+        envVar: "NEXT_PUBLIC_PRES_SOCSOC",
+      },
+    ],
   },
-  { key: "otros", label: "Otros", envVar: "NEXT_PUBLIC_URL_OTROS" },
+  { key: "otros", label: "Otros", envVar: "#", description: "Email" },
 ];
 
 function getUrlFromEnv(envKey: string): string | null {
@@ -47,8 +59,10 @@ export default function Home() {
   const rootOptions = useMemo(() => OPTIONS, []);
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
 
-  const onNavigate = (envKey: string) => {
-    const url = getUrlFromEnv(envKey) ?? "#";
+  const onNavigate = (envKeys: string | string[]) => {
+    const keys = Array.isArray(envKeys) ? envKeys : [envKeys];
+    const chosenKey = keys.length <= 1 ? keys[0] : keys[Math.random() < 0.5 ? 0 : 1];
+    const url = getUrlFromEnv(chosenKey) ?? "#";
     if (url === "#") {
       alert(
         "La URL correspondiente no está configurada aún. Agrega la variable en .env.local y recarga."
@@ -108,7 +122,7 @@ export default function Home() {
                   ))}
                 </div>
               )}
-              {!opt.children && opt.description && (
+              {opt.description && (
                 <div className="px-4 pb-3 text-xs text-neutral-500">
                   {opt.description}
                 </div>
