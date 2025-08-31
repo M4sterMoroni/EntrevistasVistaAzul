@@ -47,7 +47,7 @@ const OPTIONS: Option[] = [
       },
     ],
   },
-  { key: "otros", label: "Otros", envVar: "#", description: "Solicitud a secretat" },
+  { key: "otros", label: "Otros", envVar: "#", description: "Solicitud a secretario" },
 ];
 
 // Next.js only inlines envs referenced with static keys.
