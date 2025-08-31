@@ -50,8 +50,18 @@ const OPTIONS: Option[] = [
   { key: "otros", label: "Otros", envVar: "#", description: "Email" },
 ];
 
+// Next.js only inlines envs referenced with static keys.
+// Build a static map of public envs for safe lookup by key.
+const PUBLIC_ENV = {
+  NEXT_PUBLIC_OBISPO: process.env.NEXT_PUBLIC_OBISPO,
+  NEXT_PUBLIC_PRIMER_CONSEJERO: process.env.NEXT_PUBLIC_PRIMER_CONSEJERO,
+  NEXT_PUBLIC_SEGUNDO_CONSEJERO: process.env.NEXT_PUBLIC_SEGUNDO_CONSEJERO,
+  NEXT_PUBLIC_PRES_CUORUM: process.env.NEXT_PUBLIC_PRES_CUORUM,
+  NEXT_PUBLIC_PRES_SOCSOC: process.env.NEXT_PUBLIC_PRES_SOCSOC,
+} as const;
+
 function getUrlFromEnv(envKey: string): string | null {
-  const value = process.env[envKey];
+  const value = PUBLIC_ENV[envKey as keyof typeof PUBLIC_ENV];
   return value && value.trim().length > 0 ? value : null;
 }
 
