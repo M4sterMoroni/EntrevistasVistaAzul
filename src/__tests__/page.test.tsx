@@ -10,98 +10,12 @@ const mockEnvVars = {
   NEXT_PUBLIC_PRES_SOCSOC: 'https://socsoc.example.com',
 }
 
-// Mock the PUBLIC_ENV object
-const mockPublicEnv = {
-  NEXT_PUBLIC_OBISPO: mockEnvVars.NEXT_PUBLIC_OBISPO,
-  NEXT_PUBLIC_PRIMER_CONSEJERO: mockEnvVars.NEXT_PUBLIC_PRIMER_CONSEJERO,
-  NEXT_PUBLIC_SEGUNDO_CONSEJERO: mockEnvVars.NEXT_PUBLIC_SEGUNDO_CONSEJERO,
-  NEXT_PUBLIC_PRES_CUORUM: mockEnvVars.NEXT_PUBLIC_PRES_CUORUM,
-  NEXT_PUBLIC_PRES_SOCSOC: mockEnvVars.NEXT_PUBLIC_PRES_SOCSOC,
-}
-
-// Mock the component
+// Mock the component with environment variables
 jest.mock('../app/page', () => {
   const originalModule = jest.requireActual('../app/page')
   return {
     __esModule: true,
-    default: function MockHome() {
-      // Override the PUBLIC_ENV object
-      const PUBLIC_ENV = mockPublicEnv
-      
-      const OPTIONS = [
-        {
-          key: "recomendacion",
-          label: "Recomendación para el templo",
-          envVar: "NEXT_PUBLIC_OBISPO",
-          children: [
-            {
-              key: "primera-ordenanza",
-              label: "Ordenanza personal",
-              envVar: "NEXT_PUBLIC_OBISPO",
-            },
-            {
-              key: "renovacion",
-              label: "Renovación",
-              envVar: ["NEXT_PUBLIC_PRIMER_CONSEJERO", "NEXT_PUBLIC_SEGUNDO_CONSEJERO"],
-            },
-          ],
-        },
-        { key: "dignidad", label: "Dignidad", envVar: "NEXT_PUBLIC_OBISPO" },
-        { key: "ajuste-diezmos", label: "Ajuste anual de diezmos", envVar: "NEXT_PUBLIC_OBISPO" },
-        {
-          key: "autosuficiencia",
-          label: "Desafíos temporales",
-          description: "Plan de autosuficiencia",
-          envVar: "#",
-          children: [
-            {
-              key: "autosuficiencia-varones",
-              label: "Varones",
-              envVar: "NEXT_PUBLIC_PRES_CUORUM",
-            },
-            {
-              key: "autosuficiencia-mujeres",
-              label: "Mujeres",
-              envVar: "NEXT_PUBLIC_PRES_SOCSOC",
-            },
-          ],
-        },
-        { key: "otros", label: "Otros", envVar: "#", description: "Solicitud a secretario" },
-      ]
-
-      function getUrlFromEnv(envKey: string): string | null {
-        const value = PUBLIC_ENV[envKey as keyof typeof PUBLIC_ENV]
-        return value && value.trim().length > 0 ? value : null
-      }
-
-      const { useMemo, useState } = require('react')
-      
-      const rootOptions = useMemo(() => OPTIONS, [])
-      const [expandedKey, setExpandedKey] = useState(null)
-
-      const onNavigate = (envKeys: string | string[]) => {
-        const keys = Array.isArray(envKeys) ? envKeys : [envKeys]
-        const availableKeys = keys.filter((k) => Boolean(getUrlFromEnv(k)))
-
-        if (availableKeys.length === 0) {
-          alert(
-            `Falta configurar la(s) variable(s): ${keys.join(", ")}.\n` +
-              "Agrégalas en Vercel (NEXT_PUBLIC_*) o en .env.local y vuelve a desplegar."
-          )
-          return
-        }
-
-        const chosenKey =
-          availableKeys.length === 1
-            ? availableKeys[0]
-            : availableKeys[Math.random() < 0.5 ? 0 : 1]
-
-        const url = getUrlFromEnv(chosenKey)!
-        window.location.href = url
-      }
-
-      return originalModule.default()
-    }
+    default: originalModule.default
   }
 })
 
@@ -111,6 +25,12 @@ describe('Home Page', () => {
   beforeEach(() => {
     // Reset mocks
     jest.clearAllMocks()
+    
+    // Mock process.env with our test values
+    Object.defineProperty(process, 'env', {
+      value: mockEnvVars,
+      writable: true,
+    })
     
     // Mock window.location.href
     Object.defineProperty(window, 'location', {

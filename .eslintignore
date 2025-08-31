@@ -1,7 +1,0 @@
-tests/jest.config.js
-tests/jest.setup.js
-node_modules/
-.next/
-dist/
-build/
-coverage/
