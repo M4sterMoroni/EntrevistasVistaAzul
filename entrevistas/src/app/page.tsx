@@ -61,14 +61,22 @@ export default function Home() {
 
   const onNavigate = (envKeys: string | string[]) => {
     const keys = Array.isArray(envKeys) ? envKeys : [envKeys];
-    const chosenKey = keys.length <= 1 ? keys[0] : keys[Math.random() < 0.5 ? 0 : 1];
-    const url = getUrlFromEnv(chosenKey) ?? "#";
-    if (url === "#") {
+    const availableKeys = keys.filter((k) => Boolean(getUrlFromEnv(k)));
+
+    if (availableKeys.length === 0) {
       alert(
-        "La URL correspondiente no está configurada aún. Agrega la variable en .env.local y recarga."
+        `Falta configurar la(s) variable(s): ${keys.join(", ")}.\n` +
+          "Agrégalas en Vercel (NEXT_PUBLIC_*) o en .env.local y vuelve a desplegar."
       );
       return;
     }
+
+    const chosenKey =
+      availableKeys.length === 1
+        ? availableKeys[0]
+        : availableKeys[Math.random() < 0.5 ? 0 : 1];
+
+    const url = getUrlFromEnv(chosenKey)!;
     window.location.href = url;
   };
 
@@ -125,6 +133,50 @@ export default function Home() {
               {opt.description && (
                 <div className="px-4 pb-3 text-xs text-neutral-500">
                   {opt.description}
+                </div>
+              )}
+              {opt.key === "otros" && (
+                <div className="px-4 pb-4">
+                  <form
+                    className="flex items-center gap-2"
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      const form = e.currentTarget as HTMLFormElement;
+                      const formData = new FormData(form);
+                      const name = String(formData.get("name") || "").trim();
+                      if (!name) {
+                        alert("Por favor ingresa tu nombre");
+                        return;
+                      }
+                      try {
+                        const res = await fetch("/api/otros-email", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ name }),
+                        });
+                        if (!res.ok) {
+                          const data = await res.json().catch(() => ({}));
+                          throw new Error(data?.error || "Error al enviar");
+                        }
+                        alert("Enviado. El secretario recibirá tu solicitud.");
+                        form.reset();
+                      } catch (err) {
+                        alert("No se pudo enviar. Intenta nuevamente.");
+                      }
+                    }}
+                  >
+                    <input
+                      name="name"
+                      placeholder="Tu nombre"
+                      className="flex-1 rounded-md border border-neutral-200/70 dark:border-neutral-800 px-3 py-2 text-sm bg-white/80 dark:bg-neutral-900/80"
+                    />
+                    <button
+                      type="submit"
+                      className="rounded-md bg-blue-600 text-white px-3 py-2 text-sm hover:bg-blue-700"
+                    >
+                      Enviar
+                    </button>
+                  </form>
                 </div>
               )}
             </div>
