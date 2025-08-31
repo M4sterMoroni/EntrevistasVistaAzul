@@ -1,4 +1,3 @@
-import { NextRequest } from 'next/server'
 import { POST } from '../app/api/otros-telegram/route'
 
 // Mock environment variables
@@ -24,7 +23,7 @@ describe('Telegram API', () => {
 
   describe('POST /api/otros-telegram', () => {
     it('returns 400 when name is missing', async () => {
-      const request = new NextRequest('http://localhost:3000/api/otros-telegram', {
+      const request = new Request('http://localhost:3000/api/otros-telegram', {
         method: 'POST',
         body: JSON.stringify({ comment: 'Test comment' }),
       })
@@ -37,7 +36,7 @@ describe('Telegram API', () => {
     })
 
     it('returns 400 when name is empty', async () => {
-      const request = new NextRequest('http://localhost:3000/api/otros-telegram', {
+      const request = new Request('http://localhost:3000/api/otros-telegram', {
         method: 'POST',
         body: JSON.stringify({ name: '   ', comment: 'Test comment' }),
       })
@@ -55,7 +54,7 @@ describe('Telegram API', () => {
         writable: true,
       })
 
-      const request = new NextRequest('http://localhost:3000/api/otros-telegram', {
+      const request = new Request('http://localhost:3000/api/otros-telegram', {
         method: 'POST',
         body: JSON.stringify({ name: 'Juan Pérez' }),
       })
@@ -73,7 +72,7 @@ describe('Telegram API', () => {
         writable: true,
       })
 
-      const request = new NextRequest('http://localhost:3000/api/otros-telegram', {
+      const request = new Request('http://localhost:3000/api/otros-telegram', {
         method: 'POST',
         body: JSON.stringify({ name: 'Juan Pérez' }),
       })
@@ -92,7 +91,7 @@ describe('Telegram API', () => {
         json: () => Promise.resolve({ ok: true }),
       })
 
-      const request = new NextRequest('http://localhost:3000/api/otros-telegram', {
+      const request = new Request('http://localhost:3000/api/otros-telegram', {
         method: 'POST',
         body: JSON.stringify({ name: 'Juan Pérez', comment: 'Test comment' }),
       })
@@ -123,7 +122,7 @@ describe('Telegram API', () => {
         json: () => Promise.resolve({ ok: true }),
       })
 
-      const request = new NextRequest('http://localhost:3000/api/otros-telegram', {
+      const request = new Request('http://localhost:3000/api/otros-telegram', {
         method: 'POST',
         body: JSON.stringify({ name: 'Juan Pérez' }),
       })
@@ -150,7 +149,7 @@ describe('Telegram API', () => {
         status: 400,
       })
 
-      const request = new NextRequest('http://localhost:3000/api/otros-telegram', {
+      const request = new Request('http://localhost:3000/api/otros-telegram', {
         method: 'POST',
         body: JSON.stringify({ name: 'Juan Pérez' }),
       })
@@ -166,7 +165,7 @@ describe('Telegram API', () => {
       // Mock network error
       ;(global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'))
 
-      const request = new NextRequest('http://localhost:3000/api/otros-telegram', {
+      const request = new Request('http://localhost:3000/api/otros-telegram', {
         method: 'POST',
         body: JSON.stringify({ name: 'Juan Pérez' }),
       })
@@ -184,7 +183,7 @@ describe('Telegram API', () => {
         json: () => Promise.resolve({ ok: true }),
       })
 
-      const request = new NextRequest('http://localhost:3000/api/otros-telegram', {
+      const request = new Request('http://localhost:3000/api/otros-telegram', {
         method: 'POST',
         body: JSON.stringify({ name: 'Juan Pérez' }),
       })

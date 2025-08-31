@@ -33,3 +33,30 @@ global.fetch = jest.fn()
 
 // Mock alert
 global.alert = jest.fn()
+
+// Mock Request for API tests
+global.Request = class Request {
+  constructor(url, options = {}) {
+    this.url = url
+    this.method = options.method || 'GET'
+    this.body = options.body
+    this.headers = options.headers || {}
+  }
+  
+  async json() {
+    return JSON.parse(this.body || '{}')
+  }
+}
+
+// Mock Response for API tests
+global.Response = class Response {
+  constructor(body, options = {}) {
+    this.body = body
+    this.status = options.status || 200
+    this.headers = options.headers || {}
+  }
+  
+  async json() {
+    return typeof this.body === 'string' ? JSON.parse(this.body) : this.body
+  }
+}
