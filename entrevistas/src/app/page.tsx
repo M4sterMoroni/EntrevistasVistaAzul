@@ -18,8 +18,8 @@ const OPTIONS: Option[] = [
     children: [
       {
         key: "primera-ordenanza",
-        label: "Primera ordenanza personal",
-        envVar: ["NEXT_PUBLIC_PRIMER_CONSEJERO", "NEXT_PUBLIC_SEGUNDO_CONSEJERO"],
+        label: "Ordenanza personal",
+        envVar: "NEXT_PUBLIC_OBISPO",
       },
       {
         key: "renovacion",
