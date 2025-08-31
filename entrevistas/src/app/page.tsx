@@ -47,7 +47,7 @@ const OPTIONS: Option[] = [
       },
     ],
   },
-  { key: "otros", label: "Otros", envVar: "#", description: "Telegram" },
+  { key: "otros", label: "Otros", envVar: "#", description: "Solicitud a secretat" },
 ];
 
 // Next.js only inlines envs referenced with static keys.
@@ -149,7 +149,7 @@ export default function Home() {
               {opt.key === "otros" && isExpanded && (
                 <div className="px-4 pb-4">
                   <form
-                    className="flex items-center gap-2"
+                    className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2"
                     onSubmit={async (e) => {
                       e.preventDefault();
                       const form = e.currentTarget as HTMLFormElement;
@@ -180,16 +180,16 @@ export default function Home() {
                     <input
                       name="name"
                       placeholder="Tu nombre"
-                      className="flex-1 rounded-md border border-neutral-200/70 dark:border-neutral-800 px-3 py-2 text-sm bg-white/80 dark:bg-neutral-900/80"
+                      className="w-full sm:flex-1 rounded-md border border-neutral-200/70 dark:border-neutral-800 px-3 py-2 text-sm bg-white/80 dark:bg-neutral-900/80"
                     />
                     <input
                       name="comment"
                       placeholder="Comentario (opcional)"
-                      className="flex-1 rounded-md border border-neutral-200/70 dark:border-neutral-800 px-3 py-2 text-sm bg-white/80 dark:bg-neutral-900/80"
+                      className="w-full sm:flex-1 rounded-md border border-neutral-200/70 dark:border-neutral-800 px-3 py-2 text-sm bg-white/80 dark:bg-neutral-900/80"
                     />
                     <button
                       type="submit"
-                      className="rounded-md bg-blue-600 text-white px-3 py-2 text-sm hover:bg-blue-700"
+                      className="w-full sm:w-auto rounded-md bg-blue-600 text-white px-3 py-2 text-sm hover:bg-blue-700"
                     >
                       Enviar
                     </button>
