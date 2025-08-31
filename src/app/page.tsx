@@ -172,7 +172,7 @@ export default function Home() {
                         }
                         alert("Solicitud enviada al secretario.");
                         form.reset();
-                      } catch (err) {
+                      } catch {
                         alert("No se pudo enviar. Intenta nuevamente.");
                       }
                     }}

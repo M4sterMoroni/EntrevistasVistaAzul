@@ -40,7 +40,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ ok: true });
-  } catch (err) {
+  } catch {
     return NextResponse.json(
       { error: "Error procesando la solicitud" },
       { status: 500 }

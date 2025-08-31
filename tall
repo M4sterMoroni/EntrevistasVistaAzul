@@ -1,1 +1,0 @@
-[33m643f769[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m feat: add email flow for 'Otros' (Nodemailer API + inline form); improve env var error to list missing NEXT_PUBLIC_*; move nodemailer to dependencies
