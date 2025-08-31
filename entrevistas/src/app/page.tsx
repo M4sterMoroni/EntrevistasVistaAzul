@@ -47,7 +47,7 @@ const OPTIONS: Option[] = [
       },
     ],
   },
-  { key: "otros", label: "Otros", envVar: "#", description: "Email" },
+  { key: "otros", label: "Otros", envVar: "#", description: "Telegram" },
 ];
 
 // Next.js only inlines envs referenced with static keys.
@@ -150,28 +150,41 @@ export default function Home() {
                 <div className="px-4 pb-4">
                   <form
                     className="flex items-center gap-2"
-                    onSubmit={(e) => {
+                    onSubmit={async (e) => {
                       e.preventDefault();
                       const form = e.currentTarget as HTMLFormElement;
                       const formData = new FormData(form);
                       const name = String(formData.get("name") || "").trim();
+                      const comment = String(formData.get("comment") || "").trim();
                       if (!name) {
                         alert("Por favor ingresa tu nombre");
                         return;
                       }
-                      const email = getUrlFromEnv("NEXT_PUBLIC_SECRETARIO");
-                      if (!email) {
-                        alert("Falta configurar la variable NEXT_PUBLIC_SECRETARIO con un correo");
-                        return;
+                      try {
+                        const res = await fetch("/api/otros-telegram", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ name, comment }),
+                        });
+                        if (!res.ok) {
+                          const data = await res.json().catch(() => ({}));
+                          throw new Error(data?.error || "Error al enviar");
+                        }
+                        alert("Enviado por Telegram.");
+                        form.reset();
+                      } catch (err) {
+                        alert("No se pudo enviar. Intenta nuevamente.");
                       }
-                      const subject = encodeURIComponent("Solicitud de entrevista (Otros)");
-                      const body = encodeURIComponent(`Nombre: ${name}\nEnviado desde la app de entrevistas`);
-                      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
                     }}
                   >
                     <input
                       name="name"
                       placeholder="Tu nombre"
+                      className="flex-1 rounded-md border border-neutral-200/70 dark:border-neutral-800 px-3 py-2 text-sm bg-white/80 dark:bg-neutral-900/80"
+                    />
+                    <input
+                      name="comment"
+                      placeholder="Comentario (opcional)"
                       className="flex-1 rounded-md border border-neutral-200/70 dark:border-neutral-800 px-3 py-2 text-sm bg-white/80 dark:bg-neutral-900/80"
                     />
                     <button
