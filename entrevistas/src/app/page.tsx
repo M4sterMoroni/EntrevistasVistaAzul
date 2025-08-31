@@ -149,7 +149,7 @@ export default function Home() {
                 <div className="px-4 pb-4">
                   <form
                     className="flex items-center gap-2"
-                    onSubmit={async (e) => {
+                    onSubmit={(e) => {
                       e.preventDefault();
                       const form = e.currentTarget as HTMLFormElement;
                       const formData = new FormData(form);
@@ -158,21 +158,14 @@ export default function Home() {
                         alert("Por favor ingresa tu nombre");
                         return;
                       }
-                      try {
-                        const res = await fetch("/api/otros-email", {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ name }),
-                        });
-                        if (!res.ok) {
-                          const data = await res.json().catch(() => ({}));
-                          throw new Error(data?.error || "Error al enviar");
-                        }
-                        alert("Enviado. El secretario recibirá tu solicitud.");
-                        form.reset();
-                      } catch (err) {
-                        alert("No se pudo enviar. Intenta nuevamente.");
+                      const email = getUrlFromEnv("NEXT_PUBLIC_SECRETARIO");
+                      if (!email) {
+                        alert("Falta configurar la variable NEXT_PUBLIC_SECRETARIO con un correo");
+                        return;
                       }
+                      const subject = encodeURIComponent("Solicitud de entrevista (Otros)");
+                      const body = encodeURIComponent(`Nombre: ${name}\nEnviado desde la app de entrevistas`);
+                      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
                     }}
                   >
                     <input
