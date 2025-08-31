@@ -29,6 +29,7 @@ const OPTIONS: Option[] = [
     ],
   },
   { key: "dignidad", label: "Dignidad", envVar: "NEXT_PUBLIC_OBISPO" },
+  { key: "ajuste-diezmos", label: "Ajuste anual de diezmos", envVar: "NEXT_PUBLIC_OBISPO" },
   {
     key: "autosuficiencia",
     label: "Desafíos temporales",
