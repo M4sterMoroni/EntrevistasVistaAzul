@@ -104,7 +104,7 @@ export default function Home() {
 
         <section className="space-y-3">
           {rootOptions.map((opt) => {
-            const isExpandable = Boolean(opt.children && opt.children.length > 0);
+            const isExpandable = Boolean(opt.children && opt.children.length > 0) || opt.key === "otros";
             const isExpanded = isExpandable && expandedKey === opt.key;
             return (
             <div key={opt.key} className="rounded-lg border border-neutral-200/60 bg-white/60 dark:bg-neutral-900/60 dark:border-neutral-800">
@@ -146,7 +146,7 @@ export default function Home() {
                   {opt.description}
                 </div>
               )}
-              {opt.key === "otros" && (
+              {opt.key === "otros" && isExpanded && (
                 <div className="px-4 pb-4">
                   <form
                     className="flex items-center gap-2"
@@ -170,7 +170,7 @@ export default function Home() {
                           const data = await res.json().catch(() => ({}));
                           throw new Error(data?.error || "Error al enviar");
                         }
-                        alert("Enviado por Telegram.");
+                        alert("Solicitud enviada al secretario.");
                         form.reset();
                       } catch (err) {
                         alert("No se pudo enviar. Intenta nuevamente.");
