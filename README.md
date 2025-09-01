@@ -113,11 +113,20 @@ pnpm security:audit
 # Run security linting
 pnpm lint:security
 
+# Run SAST scan with Semgrep (requires installation)
+pnpm security:sast
+
 # Run comprehensive security check
 pnpm security:full
 ```
 
-**Note:** SAST scanning is performed automatically in the CI/CD pipeline using Semgrep GitHub Action.
+**Note:** SAST scanning uses native Semgrep integration in the CI/CD pipeline for better performance and reliability.
+
+**Local Semgrep Setup:**
+```bash
+# Install Semgrep locally (optional, for development)
+pip install semgrep
+```
 
 ### Linting
 ```bash
@@ -146,7 +155,7 @@ pnpm lint
 #### 3. **Herramientas de Seguridad**
 - **ESLint Security**: Reglas de seguridad para JavaScript/TypeScript
 - **SonarJS**: Detección de code smells y vulnerabilidades
-- **Semgrep (GitHub Actions)**: SAST (Static Application Security Testing)
+- **Semgrep (Native)**: SAST (Static Application Security Testing) con integración nativa
 - **pnpm audit**: Auditoría de dependencias
 
 #### 4. **Configuración de Next.js**

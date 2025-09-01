@@ -60,9 +60,6 @@ importers:
       jest-environment-jsdom:
         specifier: ^29.7.0
         version: 29.7.0
-      semgrep:
-        specifier: ^1.0.0
-        version: 1.0.0
       tailwindcss:
         specifier: ^4
         version: 4.1.12
@@ -2649,9 +2646,6 @@ packages:
 
   scheduler@0.26.0:
     resolution: {integrity: sha512-NlHwttCI/l5gCPR3D1nNXtWABUmBwvZpEQiD4IXSbIDq8BzLIK/7Ir5gTFSGZDUu37K5cMNp0hFtzO38sC7gWA==}
-
-  semgrep@1.0.0:
-    resolution: {integrity: sha512-1xiQCPqwORWHjDM4PDc77HqHfVS0A8+cZl/lWZmux4cjiiEA5q3d3QY47qiJaDT3OQaQFeip7nALU4BjTuVjyg==}
 
   semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
@@ -6093,8 +6087,6 @@ snapshots:
       xmlchars: 2.2.0
 
   scheduler@0.26.0: {}
-
-  semgrep@1.0.0: {}
 
   semver@6.3.1: {}
 

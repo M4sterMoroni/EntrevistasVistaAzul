@@ -15,7 +15,8 @@
     "security:audit": "pnpm audit --audit-level moderate",
     "security:check": "pnpm run security:audit && pnpm run lint:security",
     "security:full": "pnpm run security:check",
-    "security:deps": "pnpm audit --audit-level moderate && pnpm outdated"
+    "security:deps": "pnpm audit --audit-level moderate && pnpm outdated",
+    "security:sast": "semgrep ci --config p/security-audit --config p/secrets --config p/owasp-top-ten --config p/javascript --config p/typescript --config p/react --config p/nextjs || echo 'Semgrep not installed. Install with: pip install semgrep'"
   },
   "dependencies": {
     "next": "15.5.2",

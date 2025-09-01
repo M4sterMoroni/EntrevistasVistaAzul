@@ -38,6 +38,10 @@ jobs:
     name: Security Scan
     runs-on: ubuntu-latest
     needs: lint
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -59,27 +63,39 @@ jobs:
       - name: Run dependency audit
         run: pnpm security:audit
 
-      - name: Run SAST scan with Semgrep
-        uses: returntocorp/semgrep-action@v1
-        with:
-          config: >-
-            p/security-audit
-            p/secrets
-            p/owasp-top-ten
-            p/javascript
-            p/typescript
-            p/react
-            p/nextjs
-          output-format: sarif
-          output-file: semgrep-results.sarif
-          sarif-upload: true
+      - name: Run Semgrep SAST scan
+        run: |
+          # Install Semgrep
+          python3 -m pip install semgrep
+          
+          # Run Semgrep with security rules
+          semgrep ci \
+            --config p/security-audit \
+            --config p/secrets \
+            --config p/owasp-top-ten \
+            --config p/javascript \
+            --config p/typescript \
+            --config p/react \
+            --config p/nextjs \
+            --json \
+            --output semgrep-results.json \
+            --sarif \
+            --output semgrep-results.sarif
 
-      - name: Upload SAST results
+      - name: Upload Semgrep results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: semgrep-results.sarif
+
+      - name: Upload SAST results as artifact
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: sast-results
-          path: semgrep-results.sarif
+          path: |
+            semgrep-results.json
+            semgrep-results.sarif
           retention-days: 30
 
   test:
