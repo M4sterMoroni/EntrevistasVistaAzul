@@ -2,6 +2,8 @@
 
 Aplicación web para gestionar solicitudes de entrevistas del Barrio Vista Azul.
 
+**Autor:** Carlos Mahonri Monterroso Garcia
+
 ## 🚀 Características
 
 - **Interfaz moderna y responsiva** con Tailwind CSS
@@ -111,12 +113,11 @@ pnpm security:audit
 # Run security linting
 pnpm lint:security
 
-# Run SAST scan
-pnpm security:sast
-
 # Run comprehensive security check
 pnpm security:full
 ```
+
+**Note:** SAST scanning is performed automatically in the CI/CD pipeline using Semgrep GitHub Action.
 
 ### Linting
 ```bash
@@ -145,7 +146,7 @@ pnpm lint
 #### 3. **Herramientas de Seguridad**
 - **ESLint Security**: Reglas de seguridad para JavaScript/TypeScript
 - **SonarJS**: Detección de code smells y vulnerabilidades
-- **Semgrep**: SAST (Static Application Security Testing)
+- **Semgrep (GitHub Actions)**: SAST (Static Application Security Testing)
 - **pnpm audit**: Auditoría de dependencias
 
 #### 4. **Configuración de Next.js**
@@ -260,8 +261,8 @@ EntrevistasVistaAzul/
 
 ## 📄 Licencia
 
-Este proyecto es privado y está destinado únicamente para uso interno del Barrio Vista Azul.
+Este proyecto es público y puede ser reutilizado a discreción.
 
 ## 🆘 Soporte
 
-Para soporte técnico, contacta al equipo de desarrollo del barrio.
+Para soporte técnico: Carlos Mahonri Monterroso Garcia

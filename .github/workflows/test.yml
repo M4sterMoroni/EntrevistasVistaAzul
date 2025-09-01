@@ -59,16 +59,27 @@ jobs:
       - name: Run dependency audit
         run: pnpm security:audit
 
-      - name: Run SAST scan
-        run: pnpm security:sast
-        continue-on-error: true
+      - name: Run SAST scan with Semgrep
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/secrets
+            p/owasp-top-ten
+            p/javascript
+            p/typescript
+            p/react
+            p/nextjs
+          output-format: sarif
+          output-file: semgrep-results.sarif
+          sarif-upload: true
 
       - name: Upload SAST results
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: sast-results
-          path: .semgrep/
+          path: semgrep-results.sarif
           retention-days: 30
 
   test:
@@ -151,7 +162,7 @@ jobs:
         run: pnpm install
 
       - name: Run comprehensive security audit
-        run: pnpm security:full
+        run: pnpm security:check
 
       - name: Check for outdated dependencies
         run: pnpm security:deps
@@ -163,7 +174,6 @@ jobs:
         with:
           name: security-report
           path: |
-            .semgrep/
             coverage/
           retention-days: 30
 
