@@ -68,7 +68,7 @@ jobs:
           # Install Semgrep
           python3 -m pip install semgrep
           
-          # Run Semgrep with security rules
+          # Run Semgrep with security rules (JSON output)
           semgrep ci \
             --config p/security-audit \
             --config p/secrets \
@@ -78,7 +78,17 @@ jobs:
             --config p/react \
             --config p/nextjs \
             --json \
-            --output semgrep-results.json \
+            --output semgrep-results.json
+          
+          # Run Semgrep with security rules (SARIF output)
+          semgrep ci \
+            --config p/security-audit \
+            --config p/secrets \
+            --config p/owasp-top-ten \
+            --config p/javascript \
+            --config p/typescript \
+            --config p/react \
+            --config p/nextjs \
             --sarif \
             --output semgrep-results.sarif
 
