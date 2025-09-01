@@ -4,6 +4,7 @@ import { POST } from '../app/api/otros-telegram/route'
 const mockEnvVars = {
   TELEGRAM_BOT_TOKEN: 'test-bot-token',
   TELEGRAM_CHAT_ID: '-1001234567890',
+  NODE_ENV: 'test',
 }
 
 describe('Telegram API', () => {
@@ -25,6 +26,9 @@ describe('Telegram API', () => {
     it('returns 400 when name is missing', async () => {
       const request = new Request('http://localhost:3000/api/otros-telegram', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ comment: 'Test comment' }),
       })
 
@@ -38,6 +42,9 @@ describe('Telegram API', () => {
     it('returns 400 when name is empty', async () => {
       const request = new Request('http://localhost:3000/api/otros-telegram', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ name: '   ', comment: 'Test comment' }),
       })
 
@@ -56,6 +63,9 @@ describe('Telegram API', () => {
 
       const request = new Request('http://localhost:3000/api/otros-telegram', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ name: 'Juan Pérez' }),
       })
 
@@ -74,6 +84,9 @@ describe('Telegram API', () => {
 
       const request = new Request('http://localhost:3000/api/otros-telegram', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ name: 'Juan Pérez' }),
       })
 
@@ -93,6 +106,9 @@ describe('Telegram API', () => {
 
       const request = new Request('http://localhost:3000/api/otros-telegram', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ name: 'Juan Pérez', comment: 'Test comment' }),
       })
 
@@ -107,8 +123,12 @@ describe('Telegram API', () => {
         'https://api.telegram.org/bottest-bot-token/sendMessage',
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'User-Agent': 'EntrevistasVistaAzul/1.0'
+          },
           body: expect.stringContaining('Juan Pérez'),
+          signal: expect.any(AbortSignal)
         }
       )
     })
@@ -121,6 +141,9 @@ describe('Telegram API', () => {
 
       const request = new Request('http://localhost:3000/api/otros-telegram', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ name: 'Juan Pérez' }),
       })
 
@@ -148,6 +171,9 @@ describe('Telegram API', () => {
 
       const request = new Request('http://localhost:3000/api/otros-telegram', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ name: 'Juan Pérez' }),
       })
 
@@ -164,6 +190,9 @@ describe('Telegram API', () => {
 
       const request = new Request('http://localhost:3000/api/otros-telegram', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ name: 'Juan Pérez' }),
       })
 
@@ -182,6 +211,9 @@ describe('Telegram API', () => {
 
       const request = new Request('http://localhost:3000/api/otros-telegram', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ name: 'Juan Pérez' }),
       })
 

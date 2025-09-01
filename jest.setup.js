@@ -40,11 +40,15 @@ global.Request = class Request {
     this.url = url
     this.method = options.method || 'GET'
     this.body = options.body
-    this.headers = options.headers || {}
+    this.headers = new Map(Object.entries(options.headers || {}))
   }
   
   async json() {
     return JSON.parse(this.body || '{}')
+  }
+  
+  async text() {
+    return this.body || ''
   }
 }
 

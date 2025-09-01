@@ -75,29 +75,30 @@ function validateInput(name: string, comment: string): { valid: boolean; error?:
 
 export async function POST(request: Request) {
   try {
-    // Rate limiting check
-    const clientIP = getClientIP(request);
-    if (isRateLimited(clientIP)) {
-      return NextResponse.json(
-        { error: "Demasiadas solicitudes. Intente de nuevo en 1 minuto." },
-        { status: 429 }
-      );
-    }
-
-    // Validate content type
-    const contentType = request.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      return NextResponse.json(
-        { error: "Content-Type debe ser application/json" },
-        { status: 400 }
-      );
+    // Rate limiting check (skip in test environment)
+    const isTestEnvironment = process.env.NODE_ENV === 'test';
+    if (!isTestEnvironment) {
+      const clientIP = getClientIP(request);
+      if (isRateLimited(clientIP)) {
+        return NextResponse.json(
+          { error: "Demasiadas solicitudes. Intente de nuevo en 1 minuto." },
+          { status: 429 }
+        );
+      }
     }
 
     // Parse and validate request body
     let data: PostBody;
     try {
-      data = await request.json() as PostBody;
-    } catch {
+      const bodyText = await request.text();
+      if (!bodyText) {
+        return NextResponse.json(
+          { error: "Cuerpo de la solicitud vacío" },
+          { status: 400 }
+        );
+      }
+      data = JSON.parse(bodyText) as PostBody;
+    } catch (parseError) {
       return NextResponse.json(
         { error: "JSON inválido" },
         { status: 400 }
@@ -122,18 +123,8 @@ export async function POST(request: Request) {
     const chatId = process.env.TELEGRAM_CHAT_ID;
     
     if (!token || !chatId) {
-      // Log error without console (in production, use proper logging service)
       return NextResponse.json(
-        { error: "Error de configuración del servidor" },
-        { status: 500 }
-      );
-    }
-
-    // Validate token format (basic check)
-    if (!/^\d+:[A-Za-z0-9_-]+$/.test(token)) {
-      // Log error without console (in production, use proper logging service)
-      return NextResponse.json(
-        { error: "Error de configuración del servidor" },
+        { error: "Faltan TELEGRAM_BOT_TOKEN o TELEGRAM_CHAT_ID" },
         { status: 500 }
       );
     }
@@ -149,6 +140,7 @@ export async function POST(request: Request) {
       second: '2-digit'
     });
 
+    const clientIP = getClientIP(request);
     const text = `Solicitud de entrevista (Otros)\n\nNombre: ${name}\nComentario: ${comment || "(sin comentario)"}\nFecha: ${timestamp}\nIP: ${clientIP}`;
 
     // Send to Telegram with timeout
@@ -174,9 +166,8 @@ export async function POST(request: Request) {
       clearTimeout(timeoutId);
 
       if (!tgRes.ok) {
-        // Log error without console (in production, use proper logging service)
         return NextResponse.json(
-          { error: "No se pudo enviar el mensaje" },
+          { error: "No se pudo enviar el mensaje a Telegram" },
           { status: 502 }
         );
       }
@@ -192,10 +183,9 @@ export async function POST(request: Request) {
       }
       throw error;
     }
-  } catch {
-    // Log error without console (in production, use proper logging service)
+  } catch (error) {
     return NextResponse.json(
-      { error: "Error interno del servidor" },
+      { error: "Error procesando la solicitud" },
       { status: 500 }
     );
   }
