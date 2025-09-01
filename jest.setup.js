@@ -60,3 +60,25 @@ global.Response = class Response {
     return typeof this.body === 'string' ? JSON.parse(this.body) : this.body
   }
 }
+
+// Mock NextResponse for API tests
+global.NextResponse = {
+  json: (data, options = {}) => {
+    return new global.Response(JSON.stringify(data), {
+      status: options.status || 200,
+      headers: { 'Content-Type': 'application/json', ...options.headers }
+    })
+  }
+}
+
+// Mock next/server module
+jest.mock('next/server', () => ({
+  NextResponse: {
+    json: (data, options = {}) => {
+      return new global.Response(JSON.stringify(data), {
+        status: options.status || 200,
+        headers: { 'Content-Type': 'application/json', ...options.headers }
+      })
+    }
+  }
+}))

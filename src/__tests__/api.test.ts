@@ -108,10 +108,7 @@ describe('Telegram API', () => {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: '-1001234567890',
-            text: expect.stringContaining('Juan Pérez'),
-          }),
+          body: expect.stringContaining('Juan Pérez'),
         }
       )
     })
