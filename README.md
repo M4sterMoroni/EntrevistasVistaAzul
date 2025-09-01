@@ -65,18 +65,6 @@ pnpm test:coverage
 pnpm test:watch
 ```
 
-### E2E Tests
-```bash
-# Run E2E tests
-pnpm test:e2e
-
-# Run with UI
-pnpm test:e2e:ui
-
-# Run headed (visible browser)
-pnpm test:e2e:headed
-```
-
 ### Linting
 ```bash
 pnpm lint
@@ -85,9 +73,8 @@ pnpm lint
 ## Test Coverage
 
 - **Unit Tests**: React components, API routes, utility functions
-- **E2E Tests**: User interactions, navigation, form submissions
-- **Accessibility**: ARIA attributes, keyboard navigation
-- **Responsive**: Mobile, tablet, desktop layouts
+- **Accessibility**: ARIA attributes, keyboard navigation (covered in unit tests)
+- **Responsive**: Mobile, tablet, desktop layouts (manual testing recommended)
 - **Error Handling**: API failures, network errors, validation
 
 ## CI/CD Pipeline
@@ -98,8 +85,7 @@ The project uses GitHub Actions for automated testing:
 1. **Lint**: ESLint checks for code quality
 2. **Unit Tests**: Jest tests with coverage reporting
 3. **Build Check**: Ensures the app builds successfully
-4. **E2E Tests**: Playwright tests across multiple browsers
-5. **Security Audit**: npm audit for vulnerabilities
+4. **Security Audit**: pnpm audit for vulnerabilities
 
 ### Branch Protection
 - All tests must pass before merging to `main`
