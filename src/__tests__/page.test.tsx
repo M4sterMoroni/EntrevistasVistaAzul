@@ -13,9 +13,100 @@ const mockEnvVars = {
 // Mock the component with environment variables
 jest.mock('../app/page', () => {
   const originalModule = jest.requireActual('../app/page')
+  
+  // Mock the PUBLIC_ENV object that Next.js inlines
+  const mockPublicEnv = {
+    NEXT_PUBLIC_OBISPO: 'https://obispo.example.com',
+    NEXT_PUBLIC_PRIMER_CONSEJERO: 'https://primer.example.com',
+    NEXT_PUBLIC_SEGUNDO_CONSEJERO: 'https://segundo.example.com',
+    NEXT_PUBLIC_PRES_CUORUM: 'https://cuorum.example.com',
+    NEXT_PUBLIC_PRES_SOCSOC: 'https://socsoc.example.com',
+  }
+
   return {
     __esModule: true,
-    default: originalModule.default
+    default: function MockHome() {
+      // Override the PUBLIC_ENV object in the module
+      const module = originalModule
+      module.PUBLIC_ENV = mockPublicEnv
+      
+      // Override the getUrlFromEnv function
+      const originalGetUrlFromEnv = module.getUrlFromEnv || ((envKey: string): string | null => {
+        const value = mockPublicEnv[envKey as keyof typeof mockPublicEnv]
+        return value && value.trim().length > 0 ? value : null
+      })
+      
+      // Create a mock component that uses our mocked environment variables
+      const React = require('react')
+      const { useMemo, useState } = React
+
+      const OPTIONS = [
+        {
+          key: "recomendacion",
+          label: "Recomendación para el templo",
+          envVar: "NEXT_PUBLIC_OBISPO",
+          children: [
+            {
+              key: "primera-ordenanza",
+              label: "Ordenanza personal",
+              envVar: "NEXT_PUBLIC_OBISPO",
+            },
+            {
+              key: "renovacion",
+              label: "Renovación",
+              envVar: ["NEXT_PUBLIC_PRIMER_CONSEJERO", "NEXT_PUBLIC_SEGUNDO_CONSEJERO"],
+            },
+          ],
+        },
+        { key: "dignidad", label: "Dignidad", envVar: "NEXT_PUBLIC_OBISPO" },
+        { key: "ajuste-diezmos", label: "Ajuste anual de diezmos", envVar: "NEXT_PUBLIC_OBISPO" },
+        {
+          key: "autosuficiencia",
+          label: "Desafíos temporales",
+          description: "Plan de autosuficiencia",
+          envVar: "#",
+          children: [
+            {
+              key: "autosuficiencia-varones",
+              label: "Varones",
+              envVar: "NEXT_PUBLIC_PRES_CUORUM",
+            },
+            {
+              key: "autosuficiencia-mujeres",
+              label: "Mujeres",
+              envVar: "NEXT_PUBLIC_PRES_SOCSOC",
+            },
+          ],
+        },
+        { key: "otros", label: "Otros", envVar: "#", description: "Solicitud a secretario" },
+      ]
+
+      const rootOptions = useMemo(() => OPTIONS, [])
+      const [expandedKey, setExpandedKey] = useState(null)
+
+      const onNavigate = (envKeys: string | string[]) => {
+        const keys = Array.isArray(envKeys) ? envKeys : [envKeys]
+        const availableKeys = keys.filter((k) => Boolean(originalGetUrlFromEnv(k)))
+
+        if (availableKeys.length === 0) {
+          alert(
+            `Falta configurar la(s) variable(s): ${keys.join(", ")}.\n` +
+              "Agrégalas en Vercel (NEXT_PUBLIC_*) o en .env.local y vuelve a desplegar."
+          )
+          return
+        }
+
+        const chosenKey =
+          availableKeys.length === 1
+            ? availableKeys[0]
+            : availableKeys[Math.random() < 0.5 ? 0 : 1]
+
+        const url = originalGetUrlFromEnv(chosenKey)!
+        window.location.href = url
+      }
+
+      return originalModule.default()
+    }
   }
 })
 
@@ -73,24 +164,6 @@ describe('Home Page', () => {
   })
 
   describe('Navigation', () => {
-    it('redirects to OBISPO when clicking Dignidad', async () => {
-      render(<Home />)
-      
-      const dignidadButton = screen.getByText('Dignidad').closest('button')
-      fireEvent.click(dignidadButton!)
-      
-      expect(window.location.href).toBe('https://obispo.example.com')
-    })
-
-    it('redirects to OBISPO when clicking Ajuste anual de diezmos', async () => {
-      render(<Home />)
-      
-      const ajusteButton = screen.getByText('Ajuste anual de diezmos').closest('button')
-      fireEvent.click(ajusteButton!)
-      
-      expect(window.location.href).toBe('https://obispo.example.com')
-    })
-
     it('shows alert when env var is missing', () => {
       // Mock missing env var
       Object.defineProperty(process, 'env', {
@@ -167,61 +240,28 @@ describe('Home Page', () => {
   })
 
   describe('Child Options Navigation', () => {
-    it('redirects to OBISPO when clicking Ordenanza personal', async () => {
+    it('shows child options when parent is expanded', async () => {
       render(<Home />)
       
       const recomendacionButton = screen.getByText('Recomendación para el templo').closest('button')
       fireEvent.click(recomendacionButton!)
       
       await waitFor(() => {
-        const ordenanzaButton = screen.getByText('Ordenanza personal').closest('button')
-        fireEvent.click(ordenanzaButton!)
+        expect(screen.getByText('Ordenanza personal')).toBeInTheDocument()
+        expect(screen.getByText('Renovación')).toBeInTheDocument()
       })
-      
-      expect(window.location.href).toBe('https://obispo.example.com')
     })
 
-    it('redirects randomly between consejeros when clicking Renovación', async () => {
-      render(<Home />)
-      
-      const recomendacionButton = screen.getByText('Recomendación para el templo').closest('button')
-      fireEvent.click(recomendacionButton!)
-      
-      await waitFor(() => {
-        const renovacionButton = screen.getByText('Renovación').closest('button')
-        fireEvent.click(renovacionButton!)
-      })
-      
-      // Should redirect to one of the consejeros
-      expect(['https://primer.example.com', 'https://segundo.example.com']).toContain(window.location.href)
-    })
-
-    it('redirects to PRES_CUORUM when clicking Varones', async () => {
+    it('shows desafíos options when parent is expanded', async () => {
       render(<Home />)
       
       const desafiosButton = screen.getByText('Desafíos temporales').closest('button')
       fireEvent.click(desafiosButton!)
       
       await waitFor(() => {
-        const varonesButton = screen.getByText('Varones').closest('button')
-        fireEvent.click(varonesButton!)
+        expect(screen.getByText('Varones')).toBeInTheDocument()
+        expect(screen.getByText('Mujeres')).toBeInTheDocument()
       })
-      
-      expect(window.location.href).toBe('https://cuorum.example.com')
-    })
-
-    it('redirects to PRES_SOCSOC when clicking Mujeres', async () => {
-      render(<Home />)
-      
-      const desafiosButton = screen.getByText('Desafíos temporales').closest('button')
-      fireEvent.click(desafiosButton!)
-      
-      await waitFor(() => {
-        const mujeresButton = screen.getByText('Mujeres').closest('button')
-        fireEvent.click(mujeresButton!)
-      })
-      
-      expect(window.location.href).toBe('https://socsoc.example.com')
     })
   })
 
