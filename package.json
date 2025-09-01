@@ -7,9 +7,15 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
+    "lint:security": "eslint --config .eslintrc.security.mjs src/",
     "test": "jest --config jest.config.js",
     "test:watch": "jest --config jest.config.js --watch",
-    "test:coverage": "jest --config jest.config.js --coverage"
+    "test:coverage": "jest --config jest.config.js --coverage",
+    "security:audit": "pnpm audit --audit-level moderate",
+    "security:check": "pnpm run security:audit && pnpm run lint:security",
+    "security:full": "pnpm run security:check && pnpm run security:sast",
+    "security:sast": "semgrep ci --config auto",
+    "security:deps": "pnpm audit --audit-level moderate && pnpm outdated"
   },
   "dependencies": {
     "next": "15.5.2",
@@ -27,8 +33,11 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
+    "eslint-plugin-security": "^2.1.0",
+    "eslint-plugin-sonarjs": "^0.24.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
+    "semgrep": "^1.0.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

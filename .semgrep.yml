@@ -1,0 +1,162 @@
+rules:
+  # Custom security rules for Next.js applications
+  - id: nextjs-unsafe-env-usage
+    pattern: process.env.$VAR
+    message: "Environment variable usage should be validated"
+    severity: WARNING
+    languages: [typescript, javascript]
+    paths:
+      include:
+        - "src/**/*.{ts,tsx,js,jsx}"
+      exclude:
+        - "src/**/*.test.{ts,tsx,js,jsx}"
+        - "src/**/*.spec.{ts,tsx,js,jsx}"
+
+  - id: nextjs-unsafe-fetch
+    pattern: fetch($URL, { ... })
+    message: "Fetch requests should include proper error handling and timeout"
+    severity: WARNING
+    languages: [typescript, javascript]
+    paths:
+      include:
+        - "src/**/*.{ts,tsx,js,jsx}"
+
+  - id: nextjs-unsafe-json-parse
+    pattern: JSON.parse($DATA)
+    message: "JSON.parse should be wrapped in try-catch"
+    severity: WARNING
+    languages: [typescript, javascript]
+    paths:
+      include:
+        - "src/**/*.{ts,tsx,js,jsx}"
+
+  - id: nextjs-unsafe-string-concatenation
+    pattern: $STR + $USER_INPUT
+    message: "String concatenation with user input may lead to injection"
+    severity: WARNING
+    languages: [typescript, javascript]
+    paths:
+      include:
+        - "src/**/*.{ts,tsx,js,jsx}"
+
+  - id: nextjs-unsafe-regex
+    pattern: new RegExp($USER_INPUT)
+    message: "Dynamic regex creation with user input may lead to ReDoS"
+    severity: ERROR
+    languages: [typescript, javascript]
+    paths:
+      include:
+        - "src/**/*.{ts,tsx,js,jsx}"
+
+  - id: nextjs-unsafe-eval
+    pattern: eval($CODE)
+    message: "eval() usage is dangerous and should be avoided"
+    severity: ERROR
+    languages: [typescript, javascript]
+    paths:
+      include:
+        - "src/**/*.{ts,tsx,js,jsx}"
+
+  - id: nextjs-unsafe-innerHTML
+    pattern: innerHTML = $HTML
+    message: "innerHTML assignment may lead to XSS"
+    severity: ERROR
+    languages: [typescript, javascript]
+    paths:
+      include:
+        - "src/**/*.{ts,tsx,js,jsx}"
+
+  - id: nextjs-unsafe-outerHTML
+    pattern: outerHTML = $HTML
+    message: "outerHTML assignment may lead to XSS"
+    severity: ERROR
+    languages: [typescript, javascript]
+    paths:
+      include:
+        - "src/**/*.{ts,tsx,js,jsx}"
+
+  - id: nextjs-unsafe-document-write
+    pattern: document.write($CONTENT)
+    message: "document.write() may lead to XSS"
+    severity: ERROR
+    languages: [typescript, javascript]
+    paths:
+      include:
+        - "src/**/*.{ts,tsx,js,jsx}"
+
+  - id: nextjs-unsafe-location-assignment
+    pattern: location = $URL
+    message: "Direct location assignment may lead to open redirect"
+    severity: WARNING
+    languages: [typescript, javascript]
+    paths:
+      include:
+        - "src/**/*.{ts,tsx,js,jsx}"
+
+  - id: nextjs-unsafe-window-open
+    pattern: window.open($URL)
+    message: "window.open() should validate URL"
+    severity: WARNING
+    languages: [typescript, javascript]
+    paths:
+      include:
+        - "src/**/*.{ts,tsx,js,jsx}"
+
+  - id: nextjs-unsafe-postmessage
+    pattern: postMessage($DATA, $ORIGIN)
+    message: "postMessage should validate origin"
+    severity: WARNING
+    languages: [typescript, javascript]
+    paths:
+      include:
+        - "src/**/*.{ts,tsx,js,jsx}"
+
+  - id: nextjs-unsafe-localStorage
+    pattern: localStorage.setItem($KEY, $VALUE)
+    message: "localStorage should not store sensitive data"
+    severity: WARNING
+    languages: [typescript, javascript]
+    paths:
+      include:
+        - "src/**/*.{ts,tsx,js,jsx}"
+
+  - id: nextjs-unsafe-sessionStorage
+    pattern: sessionStorage.setItem($KEY, $VALUE)
+    message: "sessionStorage should not store sensitive data"
+    severity: WARNING
+    languages: [typescript, javascript]
+    paths:
+      include:
+        - "src/**/*.{ts,tsx,js,jsx}"
+
+  - id: nextjs-unsafe-cookie
+    pattern: document.cookie = $COOKIE
+    message: "Cookie assignment should include security flags"
+    severity: WARNING
+    languages: [typescript, javascript]
+    paths:
+      include:
+        - "src/**/*.{ts,tsx,js,jsx}"
+
+  - id: nextjs-unsafe-console
+    pattern: console.log($DATA)
+    message: "Console logging may expose sensitive information"
+    severity: INFO
+    languages: [typescript, javascript]
+    paths:
+      include:
+        - "src/**/*.{ts,tsx,js,jsx}"
+      exclude:
+        - "src/**/*.test.{ts,tsx,js,jsx}"
+        - "src/**/*.spec.{ts,tsx,js,jsx}"
+
+# Exclude test files and build artifacts
+exclude:
+  - "node_modules/**"
+  - ".next/**"
+  - "coverage/**"
+  - "tests/**"
+  - "**/*.test.{ts,tsx,js,jsx}"
+  - "**/*.spec.{ts,tsx,js,jsx}"
+  - "jest.config.js"
+  - "jest.setup.js"

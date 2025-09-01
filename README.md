@@ -1,68 +1,121 @@
-# EntrevistasVistaAzul
+# Entrevistas Vista Azul
 
-This is a Next.js app for selecting and requesting interviews for Barrio Vista Azul.
+Aplicación web para gestionar solicitudes de entrevistas del Barrio Vista Azul.
 
-## Features
+## 🚀 Características
 
-- Clean, mobile‑first UI with expandable sections
-- Options for: Recomendación para el templo, Dignidad, Ajuste anual de diezmos, Desafíos temporales (Varones/Mujeres), Otros
-- Client redirects to URLs based on environment variables
-- "Otros" posts Name + Comment to a Telegram group via server API
+- **Interfaz moderna y responsiva** con Tailwind CSS
+- **Opciones de entrevista** organizadas por categorías
+- **Integración con Telegram** para notificaciones
+- **Redirección inteligente** basada en el tipo de entrevista
+- **Validación de entrada** y sanitización de datos
+- **Rate limiting** para prevenir abuso
+- **Headers de seguridad** configurados
+- **Testing automatizado** con cobertura completa
 
-## Requirements
+## 🛠️ Tecnologías
 
-- Node 20+
-- pnpm 8+ (Corepack recommended)
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS 4
+- **Testing**: Jest, React Testing Library
+- **Security**: ESLint Security, Semgrep, TruffleHog
+- **CI/CD**: GitHub Actions
 
-## Setup
+## 📋 Requisitos
 
-1) Create env files
+- Node.js 20+
+- pnpm 8+
+
+## 🔧 Instalación
 
 ```bash
+# Clonar el repositorio
+git clone <repository-url>
+cd EntrevistasVistaAzul
+
+# Instalar dependencias
+pnpm install
+
+# Configurar variables de entorno
 cp .env.example .env.local
 ```
 
-2) Fill envs
+## ⚙️ Configuración
 
-- Public (client redirects):
-  - `NEXT_PUBLIC_OBISPO`
-  - `NEXT_PUBLIC_PRIMER_CONSEJERO`
-  - `NEXT_PUBLIC_SEGUNDO_CONSEJERO`
-  - `NEXT_PUBLIC_PRES_CUORUM`
-  - `NEXT_PUBLIC_PRES_SOCSOC`
+### Variables de Entorno
 
-- Server (Telegram):
-  - `TELEGRAM_BOT_TOKEN`
-  - `TELEGRAM_CHAT_ID`
+Crea un archivo `.env.local` con las siguientes variables:
 
-3) Install and run
+```env
+# URLs de redirección
+NEXT_PUBLIC_OBISPO=https://obispo.example.com
+NEXT_PUBLIC_PRIMER_CONSEJERO=https://primer.example.com
+NEXT_PUBLIC_SEGUNDO_CONSEJERO=https://segundo.example.com
+NEXT_PUBLIC_PRES_CUORUM=https://cuorum.example.com
+NEXT_PUBLIC_PRES_SOCSOC=https://socsoc.example.com
 
-```bash
-pnpm install
-pnpm dev
+# Telegram Bot (para la opción "Otros")
+TELEGRAM_BOT_TOKEN=your_bot_token_here
+TELEGRAM_CHAT_ID=your_chat_id_here
 ```
 
-Open http://localhost:3000
+### Configuración de Telegram
 
-## Testing
+1. **Crear un bot**:
+   - Habla con [@BotFather](https://t.me/botfather) en Telegram
+   - Usa el comando `/newbot`
+   - Sigue las instrucciones para crear tu bot
+   - Guarda el token que te proporciona
 
-All test files are organized in the `tests/` directory:
-- `tests/jest.config.js` - Jest configuration
-- `tests/jest.setup.js` - Jest setup and mocks
-- `tests/playwright.config.ts` - Playwright configuration
-- `tests/e2e/` - E2E test files
-- `src/__tests__/` - Unit test files
+2. **Obtener el Chat ID**:
+   - Agrega tu bot al grupo donde quieres recibir las notificaciones
+   - Envía un mensaje al grupo
+   - Visita: `https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates`
+   - Busca el `chat.id` en la respuesta
+
+3. **Configurar en Vercel**:
+   - Ve a tu proyecto en Vercel
+   - Settings → Environment Variables
+   - Agrega `TELEGRAM_BOT_TOKEN` y `TELEGRAM_CHAT_ID`
+
+## 🚀 Desarrollo
+
+```bash
+# Servidor de desarrollo
+pnpm dev
+
+# Construir para producción
+pnpm build
+
+# Iniciar servidor de producción
+pnpm start
+```
+
+## 🧪 Testing
 
 ### Unit Tests
 ```bash
 # Run all tests
 pnpm test
-
 # Run with coverage
 pnpm test:coverage
-
-# Watch mode
+# Run in watch mode
 pnpm test:watch
+```
+
+### Security Testing
+```bash
+# Run security audit
+pnpm security:audit
+
+# Run security linting
+pnpm lint:security
+
+# Run SAST scan
+pnpm security:sast
+
+# Run comprehensive security check
+pnpm security:full
 ```
 
 ### Linting
@@ -70,85 +123,145 @@ pnpm test:watch
 pnpm lint
 ```
 
-## Test Coverage
+## 🔒 Seguridad
 
+### Medidas Implementadas
+
+#### 1. **Headers de Seguridad**
+- `X-Frame-Options: DENY` - Previene clickjacking
+- `X-Content-Type-Options: nosniff` - Previene MIME sniffing
+- `Strict-Transport-Security` - Fuerza HTTPS
+- `Content-Security-Policy` - Previene XSS
+- `Referrer-Policy` - Controla información de referrer
+- `Permissions-Policy` - Restringe APIs del navegador
+
+#### 2. **Validación y Sanitización**
+- Validación de entrada en el frontend y backend
+- Sanitización de datos para prevenir XSS
+- Rate limiting (5 requests/minuto por IP)
+- Validación de Content-Type
+- Timeout en requests externos (10 segundos)
+
+#### 3. **Herramientas de Seguridad**
+- **ESLint Security**: Reglas de seguridad para JavaScript/TypeScript
+- **SonarJS**: Detección de code smells y vulnerabilidades
+- **Semgrep**: SAST (Static Application Security Testing)
+- **pnpm audit**: Auditoría de dependencias
+
+#### 4. **Configuración de Next.js**
+- Headers de seguridad configurados
+- `poweredByHeader: false` - Oculta información del servidor
+- TypeScript en modo estricto
+- ESLint obligatorio en builds
+
+### Mejores Prácticas
+
+1. **Variables de Entorno**:
+   - Nunca committear secretos al repositorio
+   - Usar `NEXT_PUBLIC_` solo para variables públicas
+   - Validar variables de entorno en runtime
+
+2. **Validación de Entrada**:
+   - Validar y sanitizar toda entrada del usuario
+   - Limitar longitud de campos
+   - Detectar patrones sospechosos
+
+3. **Manejo de Errores**:
+   - No exponer información sensible en errores
+   - Logging apropiado para debugging
+   - Timeouts en requests externos
+
+4. **Dependencias**:
+   - Mantener dependencias actualizadas
+   - Revisar auditorías de seguridad regularmente
+   - Usar `pnpm audit` antes de cada deploy
+
+## 📊 Test Coverage
 - **Unit Tests**: React components, API routes, utility functions
+- **Security Tests**: SAST, secrets detection, dependency audit
 - **Accessibility**: ARIA attributes, keyboard navigation (covered in unit tests)
 - **Responsive**: Mobile, tablet, desktop layouts (manual testing recommended)
 - **Error Handling**: API failures, network errors, validation
 
-## CI/CD Pipeline
-
-The project uses GitHub Actions for automated testing:
+## 🔄 CI/CD Pipeline
 
 ### Workflow Steps
 1. **Lint**: ESLint checks for code quality
-2. **Unit Tests**: Jest tests with coverage reporting
-3. **Build Check**: Ensures the app builds successfully
-4. **Security Audit**: pnpm audit for vulnerabilities
+2. **Security Scan**: SAST, secrets detection, dependency audit
+3. **Unit Tests**: Jest tests with coverage reporting
+4. **Build Check**: Ensures the app builds successfully
+5. **Security Audit**: Comprehensive security review
 
 ### Branch Protection
 - All tests must pass before merging to `main`
-- Code coverage threshold: 80%
-- Security vulnerabilities block deployment
+- Security scans must complete successfully
+- Code coverage thresholds enforced
 
-### Deployment
-- Vercel automatically rebuilds and deploys when code is pushed to `main`
-- No additional deployment steps needed in GitHub Actions
+### Artifacts
+- Coverage reports uploaded to Codecov
+- Security scan results stored as artifacts
+- Build logs preserved for debugging
 
-## Telegram configuration
+## 🚀 Despliegue
 
-1) Create a bot with @BotFather → `/newbot`, copy the token.
-2) Add the bot to your group and send a message in the group.
-3) Get the group chat ID:
-   - Visit `https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates`
-   - Copy `chat.id` (negative number like `-100...`).
-4) Set envs:
-   - `TELEGRAM_BOT_TOKEN=<your-token>`
-   - `TELEGRAM_CHAT_ID=-100XXXXXXXXXX`
+### Vercel (Recomendado)
+1. Conecta tu repositorio de GitHub a Vercel
+2. Configura las variables de entorno
+3. Vercel automáticamente despliega en cada push a `main`
 
-## Behavior
+### Variables de Entorno en Vercel
+- `NEXT_PUBLIC_OBISPO`
+- `NEXT_PUBLIC_PRIMER_CONSEJERO`
+- `NEXT_PUBLIC_SEGUNDO_CONSEJERO`
+- `NEXT_PUBLIC_PRES_CUORUM`
+- `NEXT_PUBLIC_PRES_SOCSOC`
+- `TELEGRAM_BOT_TOKEN`
+- `TELEGRAM_CHAT_ID`
 
-- Recomendación para el templo
-  - Ordenanza personal → `NEXT_PUBLIC_OBISPO`
-  - Renovación → random 50/50 between `NEXT_PUBLIC_PRIMER_CONSEJERO` and `NEXT_PUBLIC_SEGUNDO_CONSEJERO`
-- Dignidad → `NEXT_PUBLIC_OBISPO`
-- Ajuste anual de diezmos → `NEXT_PUBLIC_OBISPO`
-- Desafíos temporales
-  - Varones → `NEXT_PUBLIC_PRES_CUORUM`
-  - Mujeres → `NEXT_PUBLIC_PRES_SOCSOC`
-- Otros (Telegram)
-  - Shows a form (Nombre, Comentario) when expanded
-  - Sends to Telegram via `POST /api/otros-telegram`
+## 📝 Estructura del Proyecto
 
-If a URL env is missing, the UI shows an alert with the missing key.
+```
+EntrevistasVistaAzul/
+├── src/
+│   ├── app/
+│   │   ├── api/
+│   │   │   └── otros-telegram/
+│   │   │       └── route.ts
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   └── __tests__/
+│       ├── api.test.ts
+│       └── page.test.tsx
+├── tests/
+│   ├── jest.config.js
+│   └── jest.setup.js
+├── .github/
+│   └── workflows/
+│       └── test.yml
+├── .eslintrc.security.js
+├── .semgrep.yml
+├── next.config.ts
+└── package.json
+```
 
-## Deploy (Vercel)
+## 🤝 Contribución
 
-1) Set Environment Variables (Production and Preview):
-   - Public: `NEXT_PUBLIC_OBISPO`, `NEXT_PUBLIC_PRIMER_CONSEJERO`, `NEXT_PUBLIC_SEGUNDO_CONSEJERO`, `NEXT_PUBLIC_PRES_CUORUM`, `NEXT_PUBLIC_PRES_SOCSOC`
-   - Server: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`
-2) Redeploy to apply changes.
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
 
-## Troubleshooting
+### Guidelines
+- Sigue las reglas de ESLint
+- Asegúrate de que todos los tests pasen
+- Mantén la cobertura de tests alta
+- Documenta cambios importantes
 
-- Missing env var alert:
-  - Ensure the key exists and is non‑empty in Vercel and `.env.local`.
-  - For public vars, rebuild/redeploy (inlined at build time).
-- Telegram not sending:
-  - Bot must be in the group; use the negative `chat_id`.
-  - Remove webhook: `https://api.telegram.org/bot<token>/deleteWebhook`
-  - Send a fresh message, then check `getUpdates`.
-- Tests failing:
-  - Run `pnpm install` to ensure all dependencies are installed
-  - Check that Node version is 20+
-  - For E2E tests, ensure Playwright browsers are installed: `npx playwright install`
+## 📄 Licencia
 
-## Tech
+Este proyecto es privado y está destinado únicamente para uso interno del Barrio Vista Azul.
 
-- Next.js 15 (App Router), React 19
-- Tailwind CSS v4
-- Jest + React Testing Library (Unit Tests)
-- Playwright (E2E Tests)
-- GitHub Actions (CI/CD)
-- Vercel (Deployment)
+## 🆘 Soporte
+
+Para soporte técnico, contacta al equipo de desarrollo del barrio.
