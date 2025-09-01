@@ -98,7 +98,7 @@ export async function POST(request: Request) {
         );
       }
       data = JSON.parse(bodyText) as PostBody;
-    } catch (parseError) {
+    } catch {
       return NextResponse.json(
         { error: "JSON inválido" },
         { status: 400 }
@@ -183,7 +183,7 @@ export async function POST(request: Request) {
       }
       throw error;
     }
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Error procesando la solicitud" },
       { status: 500 }
