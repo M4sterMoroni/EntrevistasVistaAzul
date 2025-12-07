@@ -88,7 +88,9 @@ export default function Home() {
         : availableKeys[Math.random() < 0.5 ? 0 : 1];
 
     const url = getUrlFromEnv(chosenKey)!;
-    window.location.href = url;
+    if (typeof window !== "undefined") {
+      window.location.assign(url);
+    }
   };
 
   return (

@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import Home from '../app/page'
 
 // Mock the component with environment variables
 const mockEnvVars = {
@@ -10,25 +11,16 @@ const mockEnvVars = {
   NEXT_PUBLIC_PRES_SOCSOC: 'https://socsoc.example.com',
 }
 
-// Import the component directly
-import Home from '../app/page'
+const originalEnv = { ...process.env }
 
 describe('Home Page', () => {
   beforeEach(() => {
-    // Reset mocks
     jest.clearAllMocks()
-    
-    // Mock process.env with our test values
-    Object.defineProperty(process, 'env', {
-      value: mockEnvVars,
-      writable: true,
-    })
-    
-    // Mock window.location.href
-    Object.defineProperty(window, 'location', {
-      value: { href: 'http://localhost:3000' },
-      writable: true,
-    })
+    process.env = { ...originalEnv, ...mockEnvVars } as NodeJS.ProcessEnv
+  })
+
+  afterEach(() => {
+    process.env = { ...originalEnv } as NodeJS.ProcessEnv
   })
 
   describe('Rendering', () => {
@@ -67,10 +59,11 @@ describe('Home Page', () => {
   describe('Navigation', () => {
     it('shows alert when env var is missing', () => {
       // Mock missing env var
-      Object.defineProperty(process, 'env', {
-        value: { ...mockEnvVars, NEXT_PUBLIC_OBISPO: '' },
-        writable: true,
-      })
+      process.env = {
+        ...originalEnv,
+        ...mockEnvVars,
+        NEXT_PUBLIC_OBISPO: '',
+      } as NodeJS.ProcessEnv
       
       render(<Home />)
       
