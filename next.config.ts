@@ -62,20 +62,14 @@ const nextConfig: NextConfig = {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
   },
   
-  // Experimental security features
-  experimental: {
-    serverComponentsExternalPackages: [],
-  },
+  // Server external packages (replaces experimental.serverComponentsExternalPackages)
+  serverExternalPackages: [],
   
   // TypeScript strict mode
   typescript: {
     ignoreBuildErrors: false,
   },
   
-  // ESLint configuration
-  eslint: {
-    ignoreDuringBuilds: false,
-  },
 };
 
 export default nextConfig;

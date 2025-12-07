@@ -20,14 +20,6 @@ jest.mock('next/navigation', () => ({
   },
 }))
 
-// Mock window.location
-Object.defineProperty(window, 'location', {
-  value: {
-    href: 'http://localhost:3000',
-  },
-  writable: true,
-})
-
 // Mock fetch globally
 global.fetch = jest.fn()
 
