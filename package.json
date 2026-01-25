@@ -8,7 +8,7 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "lint:security": "eslint --config .eslintrc.security.mjs src/",
+    "lint:security": "eslint --config eslint.config.security.mjs src/",
     "test": "jest --config jest.config.js",
     "test:watch": "jest --config jest.config.js --watch",
     "test:coverage": "jest --config jest.config.js --coverage",
