@@ -64,10 +64,13 @@ jobs:
         run: pnpm security:audit
 
       - name: Run Semgrep SAST scan
+        id: semgrep
+        continue-on-error: true
         run: |
           # Install Semgrep
           python3 -m pip install semgrep
           
+          set +e
           # Run Semgrep with security rules (JSON output)
           semgrep ci \
             --config p/security-audit \
@@ -78,7 +81,8 @@ jobs:
             --config p/react \
             --config p/nextjs \
             --json \
-            --output semgrep-results.json || true
+            --output semgrep-results.json
+          SEMGREP_JSON_EXIT=$?
           
           # Run Semgrep with security rules (SARIF output)
           semgrep ci \
@@ -90,11 +94,20 @@ jobs:
             --config p/react \
             --config p/nextjs \
             --sarif \
-            --output semgrep-results.sarif || true
+            --output semgrep-results.sarif
+          SEMGREP_SARIF_EXIT=$?
+          set -e
 
           # Ensure SARIF exists for upload step
           if [ ! -f semgrep-results.sarif ]; then
             echo '{"version":"2.1.0","runs":[]}' > semgrep-results.sarif
+          fi
+
+          # Preserve Semgrep exit status for later failure
+          if [ "$SEMGREP_JSON_EXIT" -ne 0 ] || [ "$SEMGREP_SARIF_EXIT" -ne 0 ]; then
+            echo "exit_code=1" >> "$GITHUB_OUTPUT"
+          else
+            echo "exit_code=0" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Upload Semgrep results to GitHub Security tab
@@ -112,6 +125,10 @@ jobs:
             semgrep-results.json
             semgrep-results.sarif
           retention-days: 30
+
+      - name: Fail on Semgrep findings
+        if: steps.semgrep.outputs.exit_code != '0'
+        run: exit 1
 
   test:
     name: Unit Tests
